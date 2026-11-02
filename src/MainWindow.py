@@ -3,7 +3,6 @@ import os
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
-version = 5
 
 import BladePlot
 import RenderWindow
@@ -819,6 +818,7 @@ class Ui_MainWindow(object):
         
         # Enable drag and drop for stage list
         self.listWidget.setDragDropMode(QAbstractItemView.InternalMove)
+        self.listWidget.model().rowsMoved.connect(self.OnStagesReordered)
         
         QMetaObject.connectSlotsByName(MainWindow)
 
@@ -902,16 +902,10 @@ class Ui_MainWindow(object):
         logger.info("Opening file dialog")
         
         # Check if user cancelled
-        if version == 5:
-            if not name[0]:
-                logger.debug("User cancelled file open")
-                return
-            filename = name[0]
-        else:
-            if not name:
-                logger.debug("User cancelled file open")
-                return
-            filename = name
+        if not name[0]:
+            logger.debug("User cancelled file open")
+            return
+        filename = name[0]
         
         logger.info(f"Opening file: {filename}")
         
@@ -997,12 +991,9 @@ class Ui_MainWindow(object):
         name = QFileDialog.getSaveFileName(self.MainWindow, "Save File", None, 'Json files (*.json)')
         
         # Check if user cancelled
-        if version == 5:
-            if not name[0]:
-                return
-            name = name[0]
-        elif not name:
+        if not name[0]:
             return
+        name = name[0]
         
         #Make sure the current stage is saved to the dictionaries
         for dict in [self.commonVars[self.clicked], self.rotorVars[self.clicked], self.statorVars[self.clicked]]:
@@ -1043,6 +1034,48 @@ class Ui_MainWindow(object):
             box.exec_()
     
     
+    ################################
+    ##Function: OnStagesReordered
+    #Handle drag-and-drop reordering of stages
+    ################################   
+    def OnStagesReordered(self, parent, start, end, destination, row):
+        # Qt has already reordered the list widget items
+        # We need to reorder our data structures to match
+        if not self.commonVars or len(self.commonVars) <= 1:
+            return
+        try:
+            # The moved items are from start to end
+            # Reorder all three lists
+            moved_common = self.commonVars[start:end + 1]
+            moved_rotor = self.rotorVars[start:end + 1]
+            moved_stator = self.statorVars[start:end + 1]
+            
+            # Remove from old positions
+            del self.commonVars[start:end + 1]
+            del self.rotorVars[start:end + 1]
+            del self.statorVars[start:end + 1]
+            
+            # Adjust destination index if moving down
+            dest = row if row < start else row - len(moved_common)
+            if dest < 0:
+                dest = 0
+            if dest > len(self.commonVars):
+                dest = len(self.commonVars)
+            
+            # Insert at new position
+            for i, item in enumerate(moved_common):
+                self.commonVars.insert(dest + i, item)
+            for i, item in enumerate(moved_rotor):
+                self.rotorVars.insert(dest + i, item)
+            for i, item in enumerate(moved_stator):
+                self.statorVars.insert(dest + i, item)
+            
+            # Renumber items
+            for i in range(self.listWidget.count()):
+                self.listWidget.item(i).setText("Stage {}".format(i + 1))
+        except Exception:
+            pass
+
     ################################
     ##Function: RemoveStage
     #Removes selected stage from list and profiles
@@ -1411,6 +1444,13 @@ class Ui_MainWindow(object):
                 
                 #If there was no failure
                 if not self.failed:
+                    # Clear existing widgets to prevent memory leaks
+                    if hasattr(self, 'R_FrameLayout'):
+                        for i in reversed(range(self.R_FrameLayout.count())):
+                            widget = self.R_FrameLayout.itemAt(i).widget()
+                            if widget:
+                                widget.setParent(None)
+                                widget.deleteLater()
                     # Create progress dialog
                     progress = QProgressDialog("Generating rotor mesh...", None, 0, 0, self.MainWindow)
                     progress.setWindowTitle("Rendering Rotor")
@@ -1436,6 +1476,13 @@ class Ui_MainWindow(object):
                 
                 #If there was no failure
                 if not self.failed: 
+                    # Clear existing widgets to prevent memory leaks
+                    if hasattr(self, 'R_FrameLayout'):
+                        for i in reversed(range(self.R_FrameLayout.count())):
+                            widget = self.R_FrameLayout.itemAt(i).widget()
+                            if widget:
+                                widget.setParent(None)
+                                widget.deleteLater()
                     rend = RenderWindow.RenderWindow(self.MainWindow, self.commonVars[self.clicked], self.statorVars[self.clicked], "S")
                     self.R_FrameLayout.addWidget(rend)
                     self.R_Frame.setLayout(self.R_FrameLayout)
@@ -1947,8 +1994,8 @@ class Ui_MainWindow(object):
     #none
     ################################   
     def closeEvent(self, event):
-        qApp.quit()
-        event.ignore()
+        event.accept()
+        QApplication.quit()
         
 if __name__ == "__main__":
     import sys

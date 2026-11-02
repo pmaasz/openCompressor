@@ -11,25 +11,28 @@ from collections import OrderedDict
 #data: full compressor params (dict)
 ################################
 def StageOpen(file):
-    with open(file) as dataFile:
-        try:
-            data = json.load(dataFile, object_pairs_hook=OrderedDict)
-        except json.JSONDecodeError as e:
-            raise ValueError(f"Invalid CompPy JSON file: {e}") from e
+    try:
+        with open(file, encoding='utf-8') as dataFile:
+            try:
+                data = json.load(dataFile, object_pairs_hook=OrderedDict)
+            except json.JSONDecodeError as e:
+                raise ValueError(f"Invalid CompPy JSON file: {e}") from e
+    except (OSError, PermissionError) as e:
+        raise ValueError(f"Cannot open file: {e}") from e
 
-        if not isinstance(data, dict) or not data:
-            raise ValueError("Invalid CompPy file: expected non-empty stage dict")
+    if not isinstance(data, dict) or not data:
+        raise ValueError("Invalid CompPy file: expected non-empty stage dict")
 
-        for stage in data:
-            entry = data[stage]
-            if not isinstance(entry, dict):
-                raise ValueError(f"Invalid stage entry {stage!r}: expected dict")
-            for key in ('Stage', 'Rotor', 'Stator'):
-                if key not in entry:
-                    raise ValueError(f"Invalid stage {stage!r}: missing {key!r}")
-                if not isinstance(entry[key], dict):
-                    raise ValueError(f"Invalid stage {stage!r}: {key!r} must be a dict")
-            yield entry['Stage'], entry['Rotor'], entry['Stator']
+    for stage in data:
+        entry = data[stage]
+        if not isinstance(entry, dict):
+            raise ValueError(f"Invalid stage entry {stage!r}: expected dict")
+        for key in ('Stage', 'Rotor', 'Stator'):
+            if key not in entry:
+                raise ValueError(f"Invalid stage {stage!r}: missing {key!r}")
+            if not isinstance(entry[key], dict):
+                raise ValueError(f"Invalid stage {stage!r}: {key!r} must be a dict")
+        yield entry['Stage'], entry['Rotor'], entry['Stator']
             
 
 ################################
@@ -48,12 +51,15 @@ def StageSave(file, common, rotor, stator):
         raise ValueError("common/rotor/stator lists must have equal length")
     if not common:
         raise ValueError("nothing to save: no stages")
-    with open(file, 'w') as dataFile:
-        stages = {}
+    try:
+        with open(file, 'w', encoding='utf-8') as dataFile:
+            stages = {}
 
-        #Prepare indvidual sections
-        for stage in range(1, len(common) + 1):
-            stages['Stage ' + str(stage)] = {'Stage': common[stage - 1], 'Rotor': rotor[stage - 1], 'Stator': stator[stage - 1]}
+            #Prepare indvidual sections
+            for stage in range(1, len(common) + 1):
+                stages['Stage ' + str(stage)] = {'Stage': common[stage - 1], 'Rotor': rotor[stage - 1], 'Stator': stator[stage - 1]}
 
-        #Dump dictionary
-        json.dump(stages, dataFile, indent=4, sort_keys=True, ensure_ascii=True)
+            #Dump dictionary
+            json.dump(stages, dataFile, indent=4, sort_keys=True, ensure_ascii=True)
+    except (OSError, PermissionError) as e:
+        raise ValueError(f"Cannot save file: {e}") from e
