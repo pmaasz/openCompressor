@@ -1,4 +1,5 @@
 import os
+import json
 
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -66,6 +67,7 @@ class Ui_MainWindow(object):
         self.fileOpen = False
         self.failed = []
         self.darkMode = True
+        self._load_theme_preference()
         
         # Initialize undo/redo manager
         self.undo_manager = UndoRedoManager()
@@ -1507,7 +1509,36 @@ class Ui_MainWindow(object):
     ################################   
     def ToggleDarkMode(self):
         self.darkMode = not self.darkMode
+        self._save_theme_preference()
         self.ApplyTheme()
+    
+    def _get_settings_path(self):
+        settings_dir = os.path.expanduser('~/.config/comppy')
+        try:
+            os.makedirs(settings_dir, exist_ok=True)
+        except Exception:
+            pass
+        return os.path.join(settings_dir, 'settings.json')
+    
+    def _load_theme_preference(self):
+        try:
+            path = self._get_settings_path()
+            if os.path.exists(path):
+                with open(path, 'r', encoding='utf-8') as f:
+                    settings = json.load(f)
+                if isinstance(settings, dict) and 'darkMode' in settings:
+                    self.darkMode = bool(settings['darkMode'])
+        except Exception:
+            self.darkMode = True
+    
+    def _save_theme_preference(self):
+        try:
+            path = self._get_settings_path()
+            settings = {'darkMode': bool(self.darkMode)}
+            with open(path, 'w', encoding='utf-8') as f:
+                json.dump(settings, f)
+        except Exception:
+            pass
     
     
     ################################

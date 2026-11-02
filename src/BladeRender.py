@@ -90,11 +90,15 @@ class RenderRotor(QWidget):
         #Relative is for posistioning, to make sure some of the blade is within the rotor hub
         #It's the blade height that's exposed
         relativeBladeHeight = (self.rotorVars['Rotor Diameter'] / 2 - self.rotorVars['Hub Diameter'] / 2)
+        if relativeBladeHeight <= 0:
+            raise ValueError("Rotor diameter must be greater than hub diameter")
         #Actual height is the actual length of the blade that is created, not all is exposed
         cos_root = np.cos(np.deg2rad(rootAngle))
         if abs(cos_root) < 1e-6:
             raise ValueError("root stagger angle near 90 deg; blade height undefined")
         actualBladeHeight = (self.rotorVars['Rotor Diameter'] / BLADE_EMBED_FACTOR - self.rotorVars['Hub Diameter'] / 2) / cos_root
+        if actualBladeHeight <= 0:
+            raise ValueError("Invalid blade geometry")
 
         #Generate Blades
         num_blades = int(self.rotorVars['Num of Blade (Rotor)'])
@@ -253,11 +257,15 @@ class RenderStator(QWidget):
         #Relative is for posistioning, to make sure some of the blade is within the rotor hub
         #It's the blade height that's exposed
         relativeBladeHeight = (self.statorVars['Duct ID'] / 2 - self.statorVars['Mount Can Dia'] / 2)
+        if relativeBladeHeight <= 0:
+            raise ValueError("Duct ID must be greater than mount can diameter")
         #Actual height is the actual length of the blade that is created, not all is exposed
         cos_root = np.cos(np.deg2rad(rootAngle))
         if abs(cos_root) < 1e-6:
             raise ValueError("root stagger angle near 90 deg; blade height undefined")
         actualBladeHeight = (self.statorVars['Duct ID'] / BLADE_EMBED_FACTOR - self.statorVars['Mount Can Dia'] / 2) / cos_root
+        if actualBladeHeight <= 0:
+            raise ValueError("Invalid blade geometry")
 
         #Generate Blades
         num_blades = int(self.statorVars['Num of Blade (Stator)'])
