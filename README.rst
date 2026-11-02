@@ -180,3 +180,9 @@ The dark mode includes:
 - Theme-aware validation colors (green/yellow/red)
 - Consistent styling across all UI elements
 
+
+
+Dark Mode Settings
+""""""""""""""""""
+
+Dark mode preference is automatically saved to ``~/.config/comppy/settings.json`` and restored on next launch.
