@@ -68,7 +68,7 @@ NEW FILES CREATED: 9
 
 MODIFIED FILES: 2
 ├── src/MainWindow.py ........................ +350 lines
-└── README.rst ............................... Updated
+└── README.md ............................... Updated
 
 TOTAL NEW CODE: ~2,195 lines
 
@@ -94,7 +94,7 @@ DOCUMENTATION:
 ✅ User guide (UI_ENHANCEMENTS.md)
 ✅ Technical docs (IMPLEMENTATION_SUMMARY.md)
 ✅ Demo script (DEMO_SCRIPT.md)
-✅ Updated README.rst
+✅ Updated README.md
 ✅ Inline code documentation
 ✅ CHANGELOG.md created
 

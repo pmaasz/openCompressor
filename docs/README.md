@@ -11,12 +11,12 @@ This directory contains documentation for CompPy.
   - Includes talking points
 
 ### Developer Documentation
-- See the main [README.rst](../README.rst) for project overview, installation, and usage
+- See the main [README.md](../README.md) for project overview, installation, and usage
 
 ## Quick Start
 
 ### For Users
-1. Read the main [README.rst](../README.rst) for installation and usage
+1. Read the main [README.md](../README.md) for installation and usage
 2. Follow [DEMO_SCRIPT.md](DEMO_SCRIPT.md) for a hands-on tutorial
 3. Use tooltips in the application for parameter help
 
@@ -49,7 +49,7 @@ python -m unittest discover -s tests -v
 
 For questions or issues:
 1. Review tooltips in the application
-2. Check the main [README.rst](../README.rst)
+2. Check the main [README.md](../README.md)
 3. Open an issue on the project repository
 
 ## Contributing

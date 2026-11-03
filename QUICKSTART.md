@@ -56,10 +56,10 @@ python -m unittest discover -s tests -v
 - **12 functional tests** covering aerodynamics, 3D mesh generation, and file I/O
 - **Organized source code** in `src/` directory
 - **Requirements file** for easy dependency management
-- **Comprehensive documentation** in README.rst and INSTALL.md
+- **Comprehensive documentation** in README.md and INSTALL.md
 
 ## Next Steps
 
-- Read `README.rst` for full usage instructions
+- Read `README.md` for full usage instructions
 - Check `INSTALL.md` for detailed troubleshooting
 - Run tests with `python -m unittest discover -s tests -v`

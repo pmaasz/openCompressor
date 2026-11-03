@@ -23,7 +23,7 @@ Project Structure
     │   └── RClickWin.py       # Dialog windows
     ├── tests/            # Functional tests
     ├── requirements.txt  # Python dependencies
-    └── README.rst        # This file
+    └── README.md        # This file
 
 Dependencies
 """"""""""""""""""

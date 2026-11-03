@@ -159,7 +159,7 @@ docs/ideas.md                - Updated with completion status
 
 #### Modified Files
 - `src/MainWindow.py` - Added ~350 lines for new functionality
-- `README.rst` - Added New Features section
+- `README.md` - Added New Features section
 
 ### Testing
 - Added 14 new unit tests
