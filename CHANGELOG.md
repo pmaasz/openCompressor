@@ -1,5 +1,35 @@
 # Changelog
 
+
+## [2.2.0] - 2026-11-03 - Bug Fixes, CI/CD, and Test Coverage
+
+### Added
+
+#### CI/CD Pipeline
+- GitHub Actions workflow for automated testing across Python 3.10, 3.11, 3.12
+- Headless GUI testing with xvfb
+- Code coverage reporting
+- Release workflow for building executables with PyInstaller (Linux, Windows, macOS)
+
+#### Testing
+- Integration tests for full workflow (save/load/multi-stage)
+- Additional tests for Presets, DefaultParameters, and Tooltips modules
+- Test structure for UI and integration tests
+
+### Fixed
+
+#### Critical Bugs
+- **closeEvent**: Fixed application close to accept event and quit properly
+- **File I/O**: Added explicit UTF-8 encoding and better error handling
+- **Memory Leak**: Clear render widgets before adding new ones to prevent leaks
+- **Blade Geometry**: Added validation for division by zero and invalid dimensions
+- **File Operations**: Fixed indentation bug in FileOps.py
+
+#### Enhancements
+- **Dark Mode**: Preference now persisted to `~/.config/comppy/settings.json`
+- **Drag-and-Drop**: Stage reordering now updates all data structures correctly
+- **File Dialogs**: Removed PyQt version branching code
+
 ## [2.1.0] - 2026-02-04 - Quick Wins Implementation
 
 ### Added
