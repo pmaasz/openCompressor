@@ -1,99 +1,55 @@
 # Documentation Directory
 
-This directory contains comprehensive documentation for CompPy's UI/UX enhancements.
+This directory contains documentation for CompPy.
 
 ## Files
 
 ### User Documentation
-- **[UI_ENHANCEMENTS.md](UI_ENHANCEMENTS.md)** - Complete user guide for new features
-  - Feature descriptions
-  - How-to instructions  
-  - Tips and best practices
-  - Troubleshooting guide
-
 - **[DEMO_SCRIPT.md](DEMO_SCRIPT.md)** - Step-by-step demo walkthrough
   - Perfect for presentations
-  - Shows all features in action
+  - Shows features in action
   - Includes talking points
-  - ~15-20 minute complete demo
 
 ### Developer Documentation
-- **[IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md)** - Technical implementation details
-  - Architecture overview
-  - Files created/modified
-  - Code structure
-  - Testing results
-  - Performance considerations
-
-### Planning Documentation
-- **[ideas.md](ideas.md)** - Future feature ideas and roadmap
-  - Completed features marked ✅
-  - Planned enhancements
-  - Feature priorities
-  - Implementation notes
+- See the main [README.rst](../README.rst) for project overview, installation, and usage
 
 ## Quick Start
 
 ### For Users
-1. Read [UI_ENHANCEMENTS.md](UI_ENHANCEMENTS.md) to learn about new features
+1. Read the main [README.rst](../README.rst) for installation and usage
 2. Follow [DEMO_SCRIPT.md](DEMO_SCRIPT.md) for a hands-on tutorial
 3. Use tooltips in the application for parameter help
 
 ### For Developers
-1. Read [IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md) for architecture
-2. Check [ideas.md](ideas.md) for future work
-3. See unit tests in `tests/test_ui_enhancements.py` for examples
+1. Check the source code in `src/`
+2. Run tests with `python -m unittest discover -s tests -v`
+3. See GitHub issues for planned features
 
-## New Features Overview
+## Features
 
-### 🎯 Tooltips & Help
-Hover over any input field to see:
-- Parameter description
-- Valid ranges
-- Usage guidance
-
-### ↩️ Undo/Redo  
-- Full history tracking
-- Ctrl+Z / Ctrl+Y shortcuts
-- Works across all stages
-
-### 📋 Parameter Presets
-5 ready-to-use configurations:
-- Micro Turbine
-- RC Ducted Fan
-- Industrial Compressor
-- High Pressure Ratio
-- Educational Example
-
-### 🎬 3D Assembly Viewer
-- View all stages together
-- Rotation animation
-- Multiple camera angles
-- Cross-section view
-
-### 🎨 Enhanced Validation
-- Real-time feedback
-- Color-coded status
-- Helpful error messages
-
-### 🔄 Drag-and-Drop
-- Reorder stages easily
-- Data moves with stage
+### Core Features
+- **Tooltips & Help** - Hover over input fields for parameter descriptions and valid ranges
+- **Undo/Redo** - Full history tracking with Ctrl+Z / Ctrl+Y shortcuts
+- **Parameter Presets** - Ready-to-use configurations for common compressor types
+- **3D Assembly Viewer** - View all stages together with animation
+- **Drag-and-Drop** - Reorder stages easily
+- **Enhanced Validation** - Real-time feedback with color-coded status
+- **Recent Files** - Quick access to recently opened designs
+- **Error Logging** - Automatic logging to `~/.comppy/logs/`
+- **Dark Mode** - Theme preference saved to `~/.config/comppy/settings.json`
 
 ## Testing
 
-All features are fully tested:
+All features are tested:
 ```bash
 python -m unittest discover -s tests -v
 ```
 
-Results: **26 tests, 0 failures**
-
 ## Support
 
 For questions or issues:
-1. Check [UI_ENHANCEMENTS.md](UI_ENHANCEMENTS.md) troubleshooting section
-2. Review tooltips in the application
+1. Review tooltips in the application
+2. Check the main [README.rst](../README.rst)
 3. Open an issue on the project repository
 
 ## Contributing
@@ -103,24 +59,3 @@ To add new features:
 2. Add unit tests
 3. Update documentation
 4. Test with existing features
-
-## Version History
-
-### v2.0 - UI/UX Enhancements (Current)
-- ✅ Tooltips & context-sensitive help
-- ✅ Undo/redo functionality
-- ✅ Parameter presets
-- ✅ 3D assembly viewer with animation
-- ✅ Drag-and-drop stage reordering
-- ✅ Enhanced real-time validation
-
-### v1.x - Previous Versions
-- Basic compressor design functionality
-- STL export
-- Dark mode
-- 2D blade profile plotting
-- Single stage 3D rendering
-
-## License
-
-Same as CompPy main project.
