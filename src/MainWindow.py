@@ -932,6 +932,8 @@ class Ui_MainWindow(object):
                         widget = self.MainWindow.findChild(QLineEdit, obj)
                         if widget:
                             widget.setText(str(dict[obj]))
+                        else:
+                            logger.debug("OpenFile: QLineEdit '%s' not found, skipping", obj)
                 
                 # Select first item in list
                 self.listWidget.setCurrentRow(0)
@@ -1170,6 +1172,8 @@ class Ui_MainWindow(object):
                     text = widget.text()
                     if text:
                         dict[item] = text
+                else:
+                    logger.debug("ListClicked: QLineEdit '%s' not found, skipping save", item)
 
         #Set currently selected stage
         try:
@@ -1187,6 +1191,8 @@ class Ui_MainWindow(object):
                 widget = self.MainWindow.findChild(QLineEdit, obj)
                 if widget:
                     widget.setText(str(dict[self.clicked][obj]))
+                else:
+                    logger.debug("ListClicked: QLineEdit '%s' not found, skipping load", obj)
 
 
     ################################
