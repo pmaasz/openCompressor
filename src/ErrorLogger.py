@@ -4,6 +4,7 @@ Logs errors and exceptions to file for debugging
 """
 import logging
 import os
+import tempfile
 from pathlib import Path
 from datetime import datetime
 
@@ -27,11 +28,27 @@ class ErrorLogger:
         self._setup_logger()
     
     def _get_log_dir(self):
-        """Get log directory in user's home"""
-        home = Path.home()
-        log_dir = home / '.comppy' / 'logs'
-        log_dir.mkdir(parents=True, exist_ok=True)
-        return log_dir
+        """Get writable log directory; fall back to temp on permission errors (gh #21)."""
+        candidates = []
+        try:
+            candidates.append(Path.home() / '.comppy' / 'logs')
+        except (RuntimeError, OSError):
+            pass
+        candidates.append(Path(tempfile.gettempdir()) / 'comppy' / 'logs')
+        for log_dir in candidates:
+            try:
+                log_dir.mkdir(parents=True, exist_ok=True)
+                probe = log_dir / '.write_probe'
+                probe.write_text('', encoding='utf-8')
+                try:
+                    probe.unlink()
+                except OSError:
+                    pass
+                return log_dir
+            except OSError:
+                continue
+        # Last resort: temp dir itself (should exist).
+        return Path(tempfile.gettempdir())
     
     def _setup_logger(self):
         """Setup logging configuration"""
@@ -41,27 +58,27 @@ class ErrorLogger:
         if self.logger.handlers:
             return
 
-        # Rotating file handler (was unbounded FileHandler).
-        from logging.handlers import RotatingFileHandler
-        file_handler = RotatingFileHandler(
-            self.log_file, maxBytes=5 * 1024 * 1024, backupCount=3,
-            encoding='utf-8')
-        file_handler.setLevel(logging.DEBUG)
-        
-        # Console handler (only errors and above)
-        console_handler = logging.StreamHandler()
-        console_handler.setLevel(logging.ERROR)
-        
-        # Formatter
         formatter = logging.Formatter(
             '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
             datefmt='%Y-%m-%d %H:%M:%S'
         )
-        file_handler.setFormatter(formatter)
-        console_handler.setFormatter(formatter)
+
+        # Rotating file handler (was unbounded FileHandler). Falls back to console-only.
+        try:
+            from logging.handlers import RotatingFileHandler
+            file_handler = RotatingFileHandler(
+                self.log_file, maxBytes=5 * 1024 * 1024, backupCount=3,
+                encoding='utf-8')
+            file_handler.setLevel(logging.DEBUG)
+            file_handler.setFormatter(formatter)
+            self.logger.addHandler(file_handler)
+        except OSError as e:
+            print(f"Warning: could not open log file {self.log_file}: {e}")
         
-        # Add handlers
-        self.logger.addHandler(file_handler)
+        # Console handler (only errors and above)
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.ERROR)
+        console_handler.setFormatter(formatter)
         self.logger.addHandler(console_handler)
 
         # Best-effort cleanup of logs older than 30 days.
