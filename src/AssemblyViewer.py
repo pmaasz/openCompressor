@@ -130,7 +130,7 @@ class AssemblyViewer(QWidget):
                     hub_length = float(rotor_params.get('Hub Length', 30))
                     axial_offset += hub_length * 1.2
                 rotor_renderer.deleteLater()
-            except Exception as e:
+            except (ValueError, TypeError, KeyError, RuntimeError, AttributeError, OSError) as e:
                 from ErrorLogger import logger as _logger
                 _logger.error(f"Error rendering rotor for stage {stage_data['stage_num']}: {e}",
                               exc_info=True)
@@ -150,7 +150,7 @@ class AssemblyViewer(QWidget):
                     duct_length = float(stator_params.get('Duct Length', 40))
                     axial_offset += duct_length * 1.2
                 stator_renderer.deleteLater()
-            except Exception as e:
+            except (ValueError, TypeError, KeyError, RuntimeError, AttributeError, OSError) as e:
                 from ErrorLogger import logger as _logger
                 _logger.error(f"Error rendering stator for stage {stage_data['stage_num']}: {e}",
                               exc_info=True)

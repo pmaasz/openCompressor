@@ -67,7 +67,7 @@ class ErrorLogger:
         # Best-effort cleanup of logs older than 30 days.
         try:
             self.clear_old_logs()
-        except Exception:
+        except OSError:
             pass
     
     def debug(self, message):
@@ -111,7 +111,7 @@ class ErrorLogger:
                 subprocess.run(['open', self.log_file])
             else:  # Linux
                 subprocess.run(['xdg-open', self.log_file])
-        except Exception as e:
+        except OSError as e:
             print(f"Could not open log file: {e}")
     
     def clear_old_logs(self, days=30):
@@ -125,7 +125,7 @@ class ErrorLogger:
                 if log_file.stat().st_mtime < cutoff_time:
                     log_file.unlink()
                     self.info(f"Deleted old log file: {log_file.name}")
-        except Exception as e:
+        except OSError as e:
             self.error(f"Error clearing old logs: {e}")
 
 

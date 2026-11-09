@@ -959,7 +959,7 @@ class Ui_MainWindow(object):
             box.setWindowTitle("Load Error")
             box.setIcon(QMessageBox.Critical)
             box.exec_()
-        except Exception as e:
+        except (OSError, ValueError, KeyError, TypeError, RuntimeError) as e:
             logger.error(f"Error loading file: {e}", exc_info=True)
             box = QMessageBox(self.MainWindow)
             box.setText("Error Loading File")
@@ -1028,7 +1028,7 @@ class Ui_MainWindow(object):
             box.setIcon(QMessageBox.Information)
             box.exec_()
             
-        except Exception as e:
+        except (OSError, ValueError, TypeError, KeyError) as e:
             logger.error(f"Error saving file: {e}", exc_info=True)
             box = QMessageBox(self.MainWindow)
             box.setText("Error Saving File")
@@ -1077,7 +1077,7 @@ class Ui_MainWindow(object):
             # Renumber items
             for i in range(self.listWidget.count()):
                 self.listWidget.item(i).setText("Stage {}".format(i + 1))
-        except Exception:
+        except (RuntimeError, AttributeError):
             pass
 
     ################################
@@ -1136,7 +1136,7 @@ class Ui_MainWindow(object):
             
             logger.info(f"Added stage {len(self.commonVars)} with default parameters")
             
-        except Exception as e:
+        except (KeyError, TypeError, ValueError, AttributeError) as e:
             logger.error(f"Error adding stage: {e}", exc_info=True)
         
         
@@ -1233,7 +1233,7 @@ class Ui_MainWindow(object):
                 box.setIcon(QMessageBox.Information)
                 box.exec_()
                 
-            except Exception as e:
+            except (OSError, RuntimeError, ValueError, TypeError) as e:
                 box = QMessageBox(self.MainWindow)
                 box.setText("Error Exporting STL")
                 box.setInformativeText(f"An error occurred: {str(e)}")
@@ -1522,7 +1522,7 @@ class Ui_MainWindow(object):
         settings_dir = os.path.expanduser('~/.config/comppy')
         try:
             os.makedirs(settings_dir, exist_ok=True)
-        except Exception:
+        except OSError:
             pass
         return os.path.join(settings_dir, 'settings.json')
     
@@ -1534,7 +1534,7 @@ class Ui_MainWindow(object):
                     settings = json.load(f)
                 if isinstance(settings, dict) and 'darkMode' in settings:
                     self.darkMode = bool(settings['darkMode'])
-        except Exception:
+        except (OSError, json.JSONDecodeError, ValueError, TypeError):
             self.darkMode = True
     
     def _save_theme_preference(self):
@@ -1543,7 +1543,7 @@ class Ui_MainWindow(object):
             settings = {'darkMode': bool(self.darkMode)}
             with open(path, 'w', encoding='utf-8') as f:
                 json.dump(settings, f)
-        except Exception:
+        except OSError:
             pass
     
     
@@ -1875,7 +1875,7 @@ class Ui_MainWindow(object):
             
             self.assembly_window.setLayout(layout)
             self.assembly_window.show()
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError, KeyError, AttributeError, ImportError, OSError) as e:
             QMessageBox.critical(
                 self.MainWindow,
                 "Assembly Viewer Error",
@@ -1970,7 +1970,7 @@ class Ui_MainWindow(object):
             
             logger.info(f"Successfully opened recent file: {filepath}")
             
-        except Exception as e:
+        except (OSError, ValueError, KeyError, TypeError, RuntimeError) as e:
             logger.error(f"Error opening recent file: {e}", exc_info=True)
             QMessageBox.critical(
                 self.MainWindow,
@@ -2013,7 +2013,7 @@ class Ui_MainWindow(object):
         """Open log file"""
         try:
             logger.open_log_file()
-        except Exception as e:
+        except OSError:
             QMessageBox.information(
                 self.MainWindow,
                 "Log File Location",

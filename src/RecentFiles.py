@@ -25,7 +25,7 @@ class RecentFilesManager:
         """Remove a file from the list and persist."""
         try:
             resolved = str(Path(filepath).resolve())
-        except Exception:
+        except OSError:
             resolved = os.path.abspath(filepath)
         if resolved in self.recent_files:
             self.recent_files.remove(resolved)
@@ -36,7 +36,7 @@ class RecentFilesManager:
         # Convert to absolute, resolved path
         try:
             filepath = str(Path(filepath).resolve())
-        except Exception:
+        except OSError:
             filepath = os.path.abspath(filepath)
         
         # Remove if already exists
@@ -75,10 +75,10 @@ class RecentFilesManager:
                 f.flush()
                 try:
                     os.fsync(f.fileno())
-                except Exception:
+                except OSError:
                     pass
             os.replace(tmp, self.config_file)
-        except Exception as e:
+        except OSError as e:
             print(f"Error saving recent files: {e}")
 
     def load(self):
@@ -95,6 +95,6 @@ class RecentFilesManager:
         except (json.JSONDecodeError, ValueError) as e:
             print(f"Error loading recent files (resetting): {e}")
             self.recent_files = []
-        except Exception as e:
+        except OSError as e:
             print(f"Error loading recent files: {e}")
             self.recent_files = []
