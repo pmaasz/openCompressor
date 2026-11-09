@@ -1641,7 +1641,22 @@ class Ui_MainWindow(object):
                         else:
                             bgcolor = "#ff0000" if not self.darkMode else "#ff3333"
                         widget.setStyleSheet("QLineEdit { background-color: %s; color: #000000; }" % bgcolor)
-    
+
+        # Restyle embedded matplotlib figures (gh #22)
+        try:
+            from MplTheme import apply_figure_theme
+            roots = [self.MainWindow, getattr(self, 'assembly_window', None)]
+            for root in roots:
+                if root is None:
+                    continue
+                for w in root.findChildren(QWidget):
+                    fig = getattr(w, 'figure', None)
+                    if fig is not None and hasattr(w, 'draw'):
+                        apply_figure_theme(fig, self.darkMode)
+                        w.draw_idle() if hasattr(w, 'draw_idle') else w.draw()
+        except (ImportError, RuntimeError, AttributeError, TypeError):
+            pass
+
     ################################
     ##Function: AddTooltips
     #Add tooltips to all input fields

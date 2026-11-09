@@ -14,6 +14,7 @@ from matplotlib.animation import FuncAnimation
 import numpy as np
 
 from BladeRender import RenderRotor, RenderStator
+from MplTheme import apply_figure_theme
 
 
 class AssemblyViewer(QWidget):
@@ -206,6 +207,7 @@ class AssemblyViewer(QWidget):
         # Set equal aspect ratio
         self.set_equal_aspect()
         
+        apply_figure_theme(self.figure)
         self.canvas.draw()
         
     def set_equal_aspect(self):

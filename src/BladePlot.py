@@ -6,6 +6,7 @@ from matplotlib.figure import Figure
 
 from BladeCalc import StageCalc, camber_from_turning
 import numpy as np
+from MplTheme import apply_figure_theme
 
 CAMBER_POS = 0.35
 
@@ -145,6 +146,7 @@ class NACA4Profile(QWidget):
         axRoot.axis('equal')
         axTip.plot(self.x, tipCL, 'r')
         #axTip.axis('equal')
+        apply_figure_theme(self.figure)
         self.canvas.draw()
         self.figure.tight_layout()
         

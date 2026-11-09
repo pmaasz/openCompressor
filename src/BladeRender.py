@@ -11,6 +11,7 @@ from BladeCalc import StageCalc, FindBounds, camber_from_turning
 from StlUtils import drawBlade, drawCylinder, drawDuct
 from stl import mesh
 import numpy as np
+from MplTheme import apply_figure_theme
 
 # NACA 4-digit max-camber position (fraction of chord). Was a bare
 # magic 0.35 in four places; single source of truth now.
@@ -172,6 +173,7 @@ class RenderRotor(QWidget):
         axes.set_yticklabels([])
         axes.set_zticklabels([])
         
+        apply_figure_theme(self.figure)
         # Force canvas update
         self.canvas.draw()
         self.canvas.flush_events()
@@ -325,6 +327,7 @@ class RenderStator(QWidget):
         axes.set_yticklabels([])
         axes.set_zticklabels([])
         
+        apply_figure_theme(self.figure)
         # Force canvas update
         self.canvas.draw()
         self.canvas.flush_events()
