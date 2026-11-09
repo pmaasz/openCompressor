@@ -2,9 +2,10 @@
 Parameter Tooltips and Descriptions for CompPy
 Provides helpful tooltips for all input fields
 """
+from __future__ import annotations
 
 # Detailed tooltips for each parameter
-PARAMETER_TOOLTIPS = {
+PARAMETER_TOOLTIPS: dict[str, str] = {
     # Universal Coefficients
     "Reaction (R)": "Reaction coefficient (0.0 - 1.0)\nDefines the pressure rise split between rotor and stator.\n0.5 = equal pressure rise in rotor and stator",
     "Loading (Psi)": "Loading coefficient (0.0 - 1.0)\nIndicates how much work the stage does.\nHigher values mean more work but potential for flow separation",
@@ -40,23 +41,25 @@ PARAMETER_TOOLTIPS = {
 }
 
 # Helpful explanations for validation failures
-VALIDATION_MESSAGES = {
+VALIDATION_MESSAGES: dict[str, str] = {
     "empty": "This field is required",
     "out_of_range": "Value must be within valid range",
     "not_number": "Please enter a valid number",
-    "not_integer": "Please enter a whole number"
+    "not_integer": "Please enter a whole number",
 }
 
-def get_tooltip(field_name):
-    """Get tooltip for a given field name"""
+
+def get_tooltip(field_name: str) -> str:
+    """Get tooltip for a given field name."""
     return PARAMETER_TOOLTIPS.get(field_name, "")
 
-def get_validation_message(field_name, error_type):
-    """Get validation message for a field"""
+
+def get_validation_message(field_name: str, error_type: str) -> str:
+    """Get a user-facing validation message for a field and error type."""
     base_msg = VALIDATION_MESSAGES.get(error_type, "Invalid value")
     tooltip = PARAMETER_TOOLTIPS.get(field_name, "")
     if tooltip:
-        # Extract just the range from the first line
+        # Extract just the range from the first line.
         first_line = tooltip.split('\n')[0]
         return f"{base_msg}\n{first_line}"
     return base_msg

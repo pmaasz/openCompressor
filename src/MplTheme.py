@@ -1,4 +1,7 @@
 """Matplotlib theme helpers for CompPy (gh #22)."""
+from __future__ import annotations
+
+from typing import Any
 
 from matplotlib.figure import Figure
 
@@ -29,7 +32,8 @@ _LIGHT = {
 }
 
 
-def is_dark_mode():
+def is_dark_mode() -> bool:
+    """Infer dark mode from the running Qt app, defaulting to True."""
     try:
         from PyQt5.QtWidgets import QApplication
         app = QApplication.instance()
@@ -38,8 +42,7 @@ def is_dark_mode():
         for w in app.topLevelWidgets():
             if hasattr(w, "darkMode"):
                 return bool(w.darkMode)
-            # MainWindow stores darkMode on the UI object attached as .ui in some setups;
-            # also check central/parent patterns used by this app.
+            # MainWindow may store darkMode on an attached UI object.
             ui = getattr(w, "ui", None)
             if ui is not None and hasattr(ui, "darkMode"):
                 return bool(ui.darkMode)
@@ -50,7 +53,8 @@ def is_dark_mode():
         return True
 
 
-def apply_figure_theme(fig, dark=None):
+def apply_figure_theme(fig: Any, dark: bool | None = None) -> None:
+    """Apply CompPy light/dark colors to a matplotlib Figure and its axes."""
     if dark is None:
         dark = is_dark_mode()
     if not isinstance(fig, Figure):

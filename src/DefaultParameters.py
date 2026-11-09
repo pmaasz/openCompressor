@@ -2,9 +2,13 @@
 Default Parameters for CompPy
 Smart defaults based on typical compressor designs
 """
+from __future__ import annotations
+
+import copy
+from typing import Any
 
 # Default parameters for a new stage - educational/small compressor
-DEFAULT_STAGE_PARAMETERS = {
+DEFAULT_STAGE_PARAMETERS: dict[str, dict[str, str]] = {
     "Stage": {
         "Reaction (R)": "0.5",
         "Loading (Psi)": "0.5",
@@ -41,7 +45,7 @@ DEFAULT_STAGE_PARAMETERS = {
 }
 
 # Recommended parameter ranges for validation
-RECOMMENDED_RANGES = {
+RECOMMENDED_RANGES: dict[str, tuple[float, float]] = {
     # Universal parameters
     "Reaction (R)": (0.4, 0.6),  # Typical range for good efficiency
     "Loading (Psi)": (0.3, 0.6),  # Avoid too high (separation) or too low (inefficient)
@@ -77,7 +81,7 @@ RECOMMENDED_RANGES = {
 }
 
 # Design rules and relationships
-DESIGN_RULES = {
+DESIGN_RULES: dict[str, tuple[float, float]] = {
     # Hub diameter should be less than rotor diameter
     "hub_to_rotor_ratio": (0.3, 0.7),  # Hub/Rotor diameter ratio
     
@@ -95,23 +99,23 @@ DESIGN_RULES = {
 }
 
 
-def get_default_parameters():
-    """Get default parameters for a new stage (deep copy)."""
-    import copy
+def get_default_parameters() -> dict[str, dict[str, str]]:
+    """Return a deep copy of default parameters for a new stage."""
     return copy.deepcopy(DEFAULT_STAGE_PARAMETERS)
 
 
-def get_recommended_range(parameter_name):
-    """Get recommended range for a parameter"""
-    return RECOMMENDED_RANGES.get(parameter_name, None)
+def get_recommended_range(parameter_name: str) -> tuple[float, float] | None:
+    """Return the recommended (min, max) range for a parameter, if defined."""
+    return RECOMMENDED_RANGES.get(parameter_name)
 
 
-def validate_design_rules(stage_params, rotor_params, stator_params):
-    """
-    Validate design relationships and return warnings
-    Returns: list of warning messages
-    """
-    warnings = []
+def validate_design_rules(
+    stage_params: dict[str, Any],
+    rotor_params: dict[str, Any],
+    stator_params: dict[str, Any],
+) -> list[str]:
+    """Validate design relationships and return warning messages."""
+    warnings: list[str] = []
     
     try:
         # Check hub to rotor ratio
@@ -161,18 +165,19 @@ def validate_design_rules(stage_params, rotor_params, stator_params):
                     f"Increase duct ID for proper clearance."
                 )
     
-    except (ValueError, TypeError) as e:
-        # If parameters aren't valid numbers yet, skip validation
+    except (ValueError, TypeError):
+        # If parameters aren't valid numbers yet, skip validation.
         pass
-    
+
     return warnings
 
 
-def apply_defaults_to_stage(stage_dict, rotor_dict, stator_dict):
-    """
-    Apply default values to empty fields in stage dictionaries
-    Modifies dictionaries in place
-    """
+def apply_defaults_to_stage(
+    stage_dict: dict[str, Any],
+    rotor_dict: dict[str, Any],
+    stator_dict: dict[str, Any],
+) -> None:
+    """Fill empty/missing fields in stage dictionaries with defaults (in place)."""
     defaults = get_default_parameters()
     
     # Apply stage defaults

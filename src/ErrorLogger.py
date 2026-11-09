@@ -2,32 +2,38 @@
 Error Logger for CompPy
 Logs errors and exceptions to file for debugging
 """
+from __future__ import annotations
+
 import logging
 import os
 import tempfile
 from pathlib import Path
 from datetime import datetime
+from typing import ClassVar
 
 
 class ErrorLogger:
-    _instance = None
-    
-    def __new__(cls):
+    """Singleton logger writing to a daily rotating file with console errors."""
+
+    _instance: ClassVar[ErrorLogger | None] = None
+
+    def __new__(cls) -> ErrorLogger:
         if cls._instance is None:
             cls._instance = super(ErrorLogger, cls).__new__(cls)
             cls._instance._initialized = False
         return cls._instance
-    
-    def __init__(self):
+
+    def __init__(self) -> None:
         if self._initialized:
             return
-        
-        self._initialized = True
-        self.log_dir = self._get_log_dir()
-        self.log_file = self.log_dir / f'comppy_{datetime.now().strftime("%Y%m%d")}.log'
+
+        self._initialized: bool = True
+        self.log_dir: Path = self._get_log_dir()
+        self.log_file: Path = self.log_dir / f'comppy_{datetime.now().strftime("%Y%m%d")}.log'
+        self.logger: logging.Logger
         self._setup_logger()
     
-    def _get_log_dir(self):
+    def _get_log_dir(self) -> Path:
         """Get writable log directory; fall back to temp on permission errors (gh #21)."""
         candidates = []
         try:
@@ -50,8 +56,8 @@ class ErrorLogger:
         # Last resort: temp dir itself (should exist).
         return Path(tempfile.gettempdir())
     
-    def _setup_logger(self):
-        """Setup logging configuration"""
+    def _setup_logger(self) -> None:
+        """Set up logging handlers (file + console)."""
         self.logger = logging.getLogger('CompPy')
         self.logger.setLevel(logging.DEBUG)
         # Avoid duplicate handlers on re-init (e.g. tests, fork).
@@ -87,36 +93,36 @@ class ErrorLogger:
         except OSError:
             pass
     
-    def debug(self, message):
-        """Log debug message"""
+    def debug(self, message: str) -> None:
+        """Log a debug message."""
         self.logger.debug(message)
-    
-    def info(self, message):
-        """Log info message"""
+
+    def info(self, message: str) -> None:
+        """Log an info message."""
         self.logger.info(message)
-    
-    def warning(self, message):
-        """Log warning message"""
+
+    def warning(self, message: str) -> None:
+        """Log a warning message."""
         self.logger.warning(message)
-    
-    def error(self, message, exc_info=False):
-        """Log error message"""
+
+    def error(self, message: str, exc_info: bool = False) -> None:
+        """Log an error message."""
         self.logger.error(message, exc_info=exc_info)
-    
-    def critical(self, message, exc_info=False):
-        """Log critical message"""
+
+    def critical(self, message: str, exc_info: bool = False) -> None:
+        """Log a critical message."""
         self.logger.critical(message, exc_info=exc_info)
-    
-    def exception(self, message):
-        """Log exception with traceback"""
+
+    def exception(self, message: str) -> None:
+        """Log an exception with traceback."""
         self.logger.exception(message)
-    
-    def get_log_file_path(self):
-        """Get path to current log file"""
+
+    def get_log_file_path(self) -> str:
+        """Return the path to the current log file."""
         return str(self.log_file)
     
-    def open_log_file(self):
-        """Open log file in default text editor"""
+    def open_log_file(self) -> None:
+        """Open the log file in the default text editor."""
         import subprocess
         import platform
         
@@ -131,8 +137,8 @@ class ErrorLogger:
         except OSError as e:
             print(f"Could not open log file: {e}")
     
-    def clear_old_logs(self, days=30):
-        """Delete log files older than specified days"""
+    def clear_old_logs(self, days: int = 30) -> None:
+        """Delete log files older than the specified number of days."""
         try:
             import time
             current_time = time.time()

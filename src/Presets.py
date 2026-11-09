@@ -2,8 +2,12 @@
 Parameter Presets for CompPy
 Library of common compressor configurations
 """
+from __future__ import annotations
 
-PRESETS = {
+import copy
+from typing import Any
+
+PRESETS: dict[str, dict[str, Any]] = {
     "Micro Turbine - Single Stage": {
         "description": "Small single-stage compressor for micro gas turbine applications",
         "Stage": {
@@ -190,19 +194,20 @@ PRESETS = {
     }
 }
 
-def get_preset_names():
-    """Return list of all preset names"""
+def get_preset_names() -> list[str]:
+    """Return all preset names."""
     return list(PRESETS.keys())
 
-def get_preset(name):
-    """Get preset configuration by name (deep copy; caller may mutate)."""
-    import copy
-    preset = PRESETS.get(name, None)
+
+def get_preset(name: str) -> dict[str, Any] | None:
+    """Return a deep copy of a preset by name, or None if unknown."""
+    preset = PRESETS.get(name)
     return copy.deepcopy(preset) if preset is not None else None
 
-def get_preset_description(name):
-    """Get description for a preset"""
-    preset = PRESETS.get(name, None)
+
+def get_preset_description(name: str) -> str:
+    """Return the description for a preset, or empty string if unknown."""
+    preset = PRESETS.get(name)
     if preset:
-        return preset.get("description", "")
+        return str(preset.get("description", ""))
     return ""
